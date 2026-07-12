@@ -1,0 +1,141 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Amiri:wght@400;700&family=Cairo:wght@300;400;500;600&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-charcoal: #2F3336;
+  --color-charcoal-deep: #232628;
+  --color-charcoal-soft: #3d4245;
+  --color-ivory: #F7F6F3;
+  --color-sand: #ECEAE4;
+  --color-olive: #556B2F;
+  --color-olive-light: #6e883f;
+  --color-stone: #8a8f92;
+  --font-serif: "Playfair Display", "Amiri", Georgia, serif;
+  --font-sans: "Inter", "Cairo", system-ui, sans-serif;
+  --radius-luxe: 1.25rem;
+  --shadow-luxe: 0 24px 60px -24px rgb(35 38 40 / 0.35);
+  --shadow-card: 0 10px 34px -14px rgb(35 38 40 / 0.22);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-ivory text-charcoal font-sans antialiased;
+  font-feature-settings: "kern" 1, "liga" 1;
+}
+
+[dir="rtl"] body, [dir="rtl"] {
+  letter-spacing: 0 !important;
+}
+
+::selection {
+  background: #556B2F;
+  color: #fff;
+}
+
+/* Elegant thin scrollbar */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #c9c7c0; border-radius: 999px; border: 3px solid #F7F6F3; }
+::-webkit-scrollbar-thumb:hover { background: #556B2F; }
+
+.font-display {
+  font-family: var(--font-serif);
+}
+
+/* Hairline dividers */
+.hairline { border-color: rgb(47 51 54 / 0.12); }
+
+/* Editorial oversized heading */
+.editorial {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: -0.015em;
+}
+[dir="rtl"] .editorial { line-height: 1.35; }
+
+/* Soft glass */
+.glass {
+  background: rgb(255 255 255 / 0.82);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+.glass-dark {
+  background: rgb(35 38 40 / 0.72);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+/* Buttons */
+.btn, .btn-primary, .btn-outline, .btn-light, .btn-olive {
+  @apply inline-flex items-center justify-center gap-2 rounded-full font-medium tracking-wide transition-all duration-300 cursor-pointer select-none text-sm;
+}
+.btn-primary, .btn-outline, .btn-light, .btn-olive {
+  @apply px-8 py-4;
+}
+.btn-primary {
+  @apply bg-charcoal text-white hover:bg-olive;
+}
+.btn-outline {
+  @apply border border-charcoal/25 text-charcoal hover:border-olive hover:text-olive bg-transparent;
+}
+.btn-light {
+  @apply bg-white text-charcoal hover:bg-olive hover:text-white;
+}
+.btn-olive {
+  @apply bg-olive text-white hover:bg-olive-light;
+}
+
+/* Inputs */
+.input {
+  @apply w-full rounded-xl border border-charcoal/15 bg-white px-4 py-3.5 text-sm text-charcoal placeholder:text-stone focus:border-olive focus:outline-none focus:ring-2 focus:ring-olive/20 transition-colors duration-200;
+}
+.label {
+  @apply block text-xs font-medium uppercase tracking-[0.14em] text-stone mb-2;
+}
+
+/* Skeleton shimmer */
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: #e8e6e0;
+}
+.skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.55), transparent);
+  animation: shimmer 1.6s infinite;
+}
+@keyframes shimmer { 100% { transform: translateX(100%); } }
+
+/* Hide scrollbar for carousels */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Scroll indicator line */
+@keyframes scrollPulse {
+  0% { transform: translateY(-100%); }
+  60% { transform: translateY(100%); }
+  100% { transform: translateY(100%); }
+}
+.scroll-line::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: #556B2F;
+  animation: scrollPulse 2.2s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  html { scroll-behavior: auto; }
+}

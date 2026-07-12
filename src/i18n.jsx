@@ -1,0 +1,217 @@
+import { createContext, useContext, useEffect, useState } from 'react'
+
+const dict = {
+  en: {
+    brand: 'KA International',
+    tagline: 'Luxury Living. Designed for Life.',
+    heroStatement: 'Furniture of quiet distinction — designed in Riyadh, crafted for generations. Every piece begins as an idea about how life should feel at home.',
+    exploreCollection: 'Explore Collection',
+    shopNow: 'Shop Now',
+    scroll: 'Scroll',
+    nav: { collections: 'Collections', rooms: 'Shop by Room', about: 'Studio', admin: 'Admin', account: 'Account', search: 'Search' },
+    categories: {
+      living: 'Living Room', bedroom: 'Bedroom', dining: 'Dining',
+      office: 'Office', outdoor: 'Outdoor', accessories: 'Accessories',
+    },
+    featuredCollections: 'Featured Collections',
+    featuredSub: 'Six worlds, one language of craft.',
+    viewAll: 'View All',
+    craftTitle: 'Crafted, not manufactured.',
+    craftBody: 'Solid woods, full-grain leathers, honed marble and brushed metals — selected by hand, finished by masters. Our ateliers work to tolerances measured in breaths.',
+    signatureTitle: 'The Signature Series',
+    signatureSub: 'Interactive pieces — drag to rotate, scroll to zoom.',
+    stats: { years: 'Years of craft', pieces: 'Signature pieces', cities: 'Cities delivered', designers: 'Partner designers' },
+    ctaProject: 'Designing a villa, hotel or office?',
+    ctaProjectSub: 'Our interior studio partners with architects and designers across the Kingdom.',
+    ctaTalk: 'Talk to the Studio',
+    product: {
+      addToCart: 'Add to Cart', buyNow: 'Buy Now', wishlist: 'Wishlist', viewAR: 'View in Your Room', share: 'Share',
+      customize: 'Customize', specifications: 'Specifications', materials: 'Materials', dimensions: 'Dimensions',
+      colors: 'Available Finishes', delivery: 'Estimated Delivery', warranty: 'Warranty', reviews: 'Reviews',
+      related: 'You May Also Like', recentlyViewed: 'Recently Viewed', deliveryTime: '4–6 weeks, white-glove delivery',
+      warrantyTime: '10-year structural warranty', compare: 'Compare', inStock: 'In stock — made to order',
+      fabric: 'Fabric', leather: 'Leather', wood: 'Wood Finish', marble: 'Marble', metal: 'Metal', legs: 'Leg Style',
+      size: 'Dimensions', layout: 'Modular Layout', configTotal: 'Your configuration', saveConfig: 'Save Configuration',
+      configSaved: 'Configuration saved', gallery: 'Gallery', video: 'Film', threeD: '3D View', fullscreen: 'Fullscreen',
+      dragHint: 'Drag to rotate · Scroll to zoom', downloadModel: 'Download 3D Model (GLB)', frequentlyBought: 'Frequently Bought Together',
+      addSelected: 'Add Selected to Cart',
+    },
+    ar_mode: {
+      title: 'View in Your Room', intro: 'Point your camera at the space, then drag the piece into place.',
+      start: 'Start Camera', noCamera: 'Camera unavailable — showing studio preview.', back: 'Back to Product',
+      scale: 'Scale', rotate: 'Rotate', hint: 'Drag to move · Pinch or scroll to resize',
+    },
+    rooms: {
+      title: 'Shop by Room', sub: 'Complete environments, composed by our studio. Tap any piece to explore it.',
+      shopRoom: 'Shop the Room', pieces: 'pieces', addAll: 'Add All to Cart', roomTotal: 'Complete room',
+    },
+    cart: {
+      title: 'Shopping Cart', empty: 'Your cart is empty.', emptySub: 'Discover pieces worth living with.',
+      subtotal: 'Subtotal', delivery: 'Delivery', deliveryNote: 'Calculated at checkout', total: 'Total',
+      checkout: 'Proceed to Checkout', continueShopping: 'Continue Shopping', remove: 'Remove', qty: 'Qty', free: 'Complimentary',
+    },
+    wishlistPage: { title: 'Wishlist', empty: 'Nothing saved yet.', moveToCart: 'Move to Cart' },
+    comparePage: { title: 'Compare', empty: 'Add products to compare from any product page.', price: 'Price', clear: 'Clear All' },
+    checkout: {
+      title: 'Checkout', guest: 'Guest Checkout', login: 'Sign In', contact: 'Contact', address: 'Delivery Address',
+      schedule: 'Delivery Schedule', payment: 'Payment', promo: 'Promo code', apply: 'Apply', promoApplied: 'Promo applied — 10% off',
+      promoInvalid: 'Code not recognized', summary: 'Order Summary', placeOrder: 'Place Order', name: 'Full name',
+      email: 'Email', phone: 'Mobile number', city: 'City', district: 'District', street: 'Street & building',
+      savedAddresses: 'Saved addresses', useSaved: 'Use', preferredDate: 'Preferred date', preferredWindow: 'Time window',
+      morning: 'Morning (9–12)', afternoon: 'Afternoon (1–5)', evening: 'Evening (6–9)',
+      payNote: 'Payments are processed securely by your selected provider.', orderPlaced: 'Order received',
+      orderPlacedSub: 'Thank you. Our concierge team will confirm your delivery schedule within 24 hours.',
+      orderNumber: 'Order number', backHome: 'Back to Home', step: 'Step', of: 'of', continue: 'Continue', backStep: 'Back',
+      vat: 'VAT (15%)', discount: 'Discount',
+    },
+    account: {
+      title: 'My Account', profile: 'Profile', orders: 'Orders', wishlist: 'Wishlist', designs: 'Saved Designs',
+      rooms: 'Saved Rooms', notifications: 'Notifications', addresses: 'Addresses', payments: 'Payment Methods',
+      signout: 'Sign Out', member: 'Member since 2024', noOrders: 'No orders yet.', noDesigns: 'No saved configurations yet.',
+      configFor: 'Configuration for', view: 'View', default: 'Default', addAddress: 'Add Address', edit: 'Edit',
+      notifEmpty: 'You are up to date.', savedCard: 'Saved card', expires: 'Expires',
+    },
+    admin: {
+      title: 'KA Admin', dashboard: 'Dashboard', products: 'Products', categories: 'Categories', collections: 'Collections',
+      models3d: '3D Models', materials: 'Materials', colors: 'Colors', inventory: 'Inventory', orders: 'Orders',
+      customers: 'Customers', reviews: 'Reviews', coupons: 'Coupons', banners: 'Banners', analytics: 'Analytics',
+      cities: 'Delivery Cities', fees: 'Delivery Fees', revenue: 'Revenue (30d)', ordersCount: 'Orders (30d)',
+      aov: 'Avg. Order Value', conversion: 'Conversion', topProducts: 'Top Products', recentOrders: 'Recent Orders',
+      salesTrend: 'Sales Trend', byCategory: 'Revenue by Category', status: 'Status', customer: 'Customer',
+      amount: 'Amount', date: 'Date', stock: 'Stock', price: 'Price', actions: 'Actions', addProduct: 'Add Product',
+      search: 'Search…', active: 'Active', draft: 'Draft', exit: 'Exit Admin',
+    },
+    footer: {
+      about: 'A Saudi house of furniture and interiors. Designed in Riyadh. Delivered across the Kingdom and the Gulf.',
+      shop: 'Shop', company: 'Company', support: 'Support', story: 'Our Story', showrooms: 'Showrooms', careers: 'Careers',
+      contact: 'Contact', deliveryReturns: 'Delivery & Returns', warranty: 'Warranty', care: 'Product Care', faq: 'FAQ',
+      newsletter: 'Join our private previews', newsletterSub: 'New collections, before anyone else.', subscribe: 'Subscribe',
+      rights: 'All rights reserved.', vatNo: 'VAT Registration', cr: 'CR',
+    },
+    common: {
+      sar: 'SAR', added: 'Added to cart', addedWishlist: 'Saved to wishlist', removedWishlist: 'Removed from wishlist',
+      addedCompare: 'Added to compare', from: 'From', new: 'New', bestseller: 'Bestseller', results: 'pieces',
+      sortBy: 'Sort', priceLow: 'Price: Low to High', priceHigh: 'Price: High to Low', newest: 'Newest', filter: 'Filter',
+      all: 'All', close: 'Close', notFound: 'Page not found', notFoundSub: 'The page you are looking for has moved or never existed.',
+    },
+  },
+  ar: {
+    brand: 'كي إيه الدولية',
+    tagline: 'فخامة المعيشة. صُممت للحياة.',
+    heroStatement: 'أثاث بتميّز هادئ — صُمم في الرياض، وصُنع ليدوم أجيالًا. كل قطعة تبدأ بفكرة عن الإحساس الذي يستحقه بيتك.',
+    exploreCollection: 'استكشف المجموعة',
+    shopNow: 'تسوق الآن',
+    scroll: 'مرّر',
+    nav: { collections: 'المجموعات', rooms: 'تسوق حسب الغرفة', about: 'الاستوديو', admin: 'الإدارة', account: 'حسابي', search: 'بحث' },
+    categories: {
+      living: 'غرفة المعيشة', bedroom: 'غرفة النوم', dining: 'الطعام',
+      office: 'المكتب', outdoor: 'الخارجية', accessories: 'الإكسسوارات',
+    },
+    featuredCollections: 'مجموعات مختارة',
+    featuredSub: 'ستة عوالم، ولغة حرفية واحدة.',
+    viewAll: 'عرض الكل',
+    craftTitle: 'حِرفة، لا تصنيع.',
+    craftBody: 'أخشاب صلبة، جلود طبيعية كاملة، رخام مصقول ومعادن مصنفرة — تُختار يدويًا وتُنهى بأيدي الحرفيين. مشاغلنا تعمل بدقة تُقاس بالأنفاس.',
+    signatureTitle: 'سلسلة التوقيع',
+    signatureSub: 'قطع تفاعلية — اسحب للتدوير، ومرّر للتكبير.',
+    stats: { years: 'عامًا من الحِرفة', pieces: 'قطعة مميزة', cities: 'مدينة نخدمها', designers: 'مصمم شريك' },
+    ctaProject: 'تصمم فيلا أو فندقًا أو مكتبًا؟',
+    ctaProjectSub: 'استوديو التصميم لدينا يعمل مع المعماريين والمصممين في أنحاء المملكة.',
+    ctaTalk: 'تحدث مع الاستوديو',
+    product: {
+      addToCart: 'أضف إلى السلة', buyNow: 'اشتر الآن', wishlist: 'المفضلة', viewAR: 'شاهدها في غرفتك', share: 'مشاركة',
+      customize: 'خصص القطعة', specifications: 'المواصفات', materials: 'الخامات', dimensions: 'الأبعاد',
+      colors: 'التشطيبات المتاحة', delivery: 'موعد التوصيل المتوقع', warranty: 'الضمان', reviews: 'التقييمات',
+      related: 'قد يعجبك أيضًا', recentlyViewed: 'شوهدت مؤخرًا', deliveryTime: '٤–٦ أسابيع، توصيل فاخر مع التركيب',
+      warrantyTime: 'ضمان هيكلي ١٠ سنوات', compare: 'مقارنة', inStock: 'متوفر — يُصنع حسب الطلب',
+      fabric: 'القماش', leather: 'الجلد', wood: 'تشطيب الخشب', marble: 'الرخام', metal: 'المعدن', legs: 'تصميم الأرجل',
+      size: 'الأبعاد', layout: 'التكوين', configTotal: 'تكوينك المختار', saveConfig: 'حفظ التكوين',
+      configSaved: 'تم حفظ التكوين', gallery: 'المعرض', video: 'الفيلم', threeD: 'عرض ثلاثي الأبعاد', fullscreen: 'ملء الشاشة',
+      dragHint: 'اسحب للتدوير · مرّر للتكبير', downloadModel: 'تحميل النموذج ثلاثي الأبعاد (GLB)', frequentlyBought: 'يُشترى معه عادة',
+      addSelected: 'أضف المحدد إلى السلة',
+    },
+    ar_mode: {
+      title: 'شاهدها في غرفتك', intro: 'وجّه الكاميرا نحو المساحة ثم اسحب القطعة إلى مكانها.',
+      start: 'تشغيل الكاميرا', noCamera: 'الكاميرا غير متاحة — نعرض لك معاينة الاستوديو.', back: 'العودة إلى المنتج',
+      scale: 'الحجم', rotate: 'تدوير', hint: 'اسحب للتحريك · مرّر أو اضغط بإصبعين للتحجيم',
+    },
+    rooms: {
+      title: 'تسوق حسب الغرفة', sub: 'بيئات متكاملة من تنسيق الاستوديو. المس أي قطعة لاستكشافها.',
+      shopRoom: 'تسوق الغرفة كاملة', pieces: 'قطع', addAll: 'أضف الكل إلى السلة', roomTotal: 'الغرفة كاملة',
+    },
+    cart: {
+      title: 'سلة التسوق', empty: 'سلتك فارغة.', emptySub: 'اكتشف قطعًا تستحق العيش معها.',
+      subtotal: 'المجموع الفرعي', delivery: 'التوصيل', deliveryNote: 'يُحسب عند الدفع', total: 'الإجمالي',
+      checkout: 'إتمام الشراء', continueShopping: 'مواصلة التسوق', remove: 'إزالة', qty: 'الكمية', free: 'مجاني',
+    },
+    wishlistPage: { title: 'المفضلة', empty: 'لا توجد قطع محفوظة بعد.', moveToCart: 'انقل إلى السلة' },
+    comparePage: { title: 'مقارنة', empty: 'أضف منتجات للمقارنة من صفحة أي منتج.', price: 'السعر', clear: 'مسح الكل' },
+    checkout: {
+      title: 'إتمام الشراء', guest: 'الشراء كضيف', login: 'تسجيل الدخول', contact: 'بيانات التواصل', address: 'عنوان التوصيل',
+      schedule: 'موعد التوصيل', payment: 'الدفع', promo: 'رمز الخصم', apply: 'تطبيق', promoApplied: 'تم تطبيق الخصم — ١٠٪',
+      promoInvalid: 'الرمز غير صحيح', summary: 'ملخص الطلب', placeOrder: 'تأكيد الطلب', name: 'الاسم الكامل',
+      email: 'البريد الإلكتروني', phone: 'رقم الجوال', city: 'المدينة', district: 'الحي', street: 'الشارع والمبنى',
+      savedAddresses: 'العناوين المحفوظة', useSaved: 'استخدام', preferredDate: 'التاريخ المفضل', preferredWindow: 'الفترة',
+      morning: 'صباحًا (٩–١٢)', afternoon: 'ظهرًا (١–٥)', evening: 'مساءً (٦–٩)',
+      payNote: 'تتم معالجة المدفوعات بأمان عبر مزود الدفع الذي تختاره.', orderPlaced: 'تم استلام طلبك',
+      orderPlacedSub: 'شكرًا لك. سيتواصل فريق الكونسيرج خلال ٢٤ ساعة لتأكيد موعد التوصيل.',
+      orderNumber: 'رقم الطلب', backHome: 'العودة للرئيسية', step: 'خطوة', of: 'من', continue: 'متابعة', backStep: 'رجوع',
+      vat: 'ضريبة القيمة المضافة (١٥٪)', discount: 'الخصم',
+    },
+    account: {
+      title: 'حسابي', profile: 'الملف الشخصي', orders: 'الطلبات', wishlist: 'المفضلة', designs: 'التصاميم المحفوظة',
+      rooms: 'الغرف المحفوظة', notifications: 'الإشعارات', addresses: 'العناوين', payments: 'طرق الدفع',
+      signout: 'تسجيل الخروج', member: 'عضو منذ ٢٠٢٤', noOrders: 'لا توجد طلبات بعد.', noDesigns: 'لا توجد تكوينات محفوظة بعد.',
+      configFor: 'تكوين لـ', view: 'عرض', default: 'الافتراضي', addAddress: 'إضافة عنوان', edit: 'تعديل',
+      notifEmpty: 'لا جديد لديك.', savedCard: 'بطاقة محفوظة', expires: 'تنتهي',
+    },
+    admin: {
+      title: 'إدارة كي إيه', dashboard: 'لوحة التحكم', products: 'المنتجات', categories: 'الفئات', collections: 'المجموعات',
+      models3d: 'النماذج ثلاثية الأبعاد', materials: 'الخامات', colors: 'الألوان', inventory: 'المخزون', orders: 'الطلبات',
+      customers: 'العملاء', reviews: 'التقييمات', coupons: 'الكوبونات', banners: 'البانرات', analytics: 'التحليلات',
+      cities: 'مدن التوصيل', fees: 'رسوم التوصيل', revenue: 'الإيرادات (٣٠ يوم)', ordersCount: 'الطلبات (٣٠ يوم)',
+      aov: 'متوسط قيمة الطلب', conversion: 'معدل التحويل', topProducts: 'الأكثر مبيعًا', recentOrders: 'أحدث الطلبات',
+      salesTrend: 'اتجاه المبيعات', byCategory: 'الإيرادات حسب الفئة', status: 'الحالة', customer: 'العميل',
+      amount: 'المبلغ', date: 'التاريخ', stock: 'المخزون', price: 'السعر', actions: 'إجراءات', addProduct: 'إضافة منتج',
+      search: 'بحث…', active: 'نشط', draft: 'مسودة', exit: 'الخروج من الإدارة',
+    },
+    footer: {
+      about: 'دار سعودية للأثاث والتصميم الداخلي. صُمم في الرياض، ويصل إلى أنحاء المملكة والخليج.',
+      shop: 'التسوق', company: 'الشركة', support: 'الدعم', story: 'قصتنا', showrooms: 'المعارض', careers: 'الوظائف',
+      contact: 'اتصل بنا', deliveryReturns: 'التوصيل والإرجاع', warranty: 'الضمان', care: 'العناية بالمنتج', faq: 'الأسئلة الشائعة',
+      newsletter: 'انضم إلى العروض الخاصة', newsletterSub: 'المجموعات الجديدة، قبل الجميع.', subscribe: 'اشترك',
+      rights: 'جميع الحقوق محفوظة.', vatNo: 'الرقم الضريبي', cr: 'السجل التجاري',
+    },
+    common: {
+      sar: 'ر.س', added: 'أُضيف إلى السلة', addedWishlist: 'حُفظ في المفضلة', removedWishlist: 'أُزيل من المفضلة',
+      addedCompare: 'أُضيف للمقارنة', from: 'ابتداءً من', new: 'جديد', bestseller: 'الأكثر مبيعًا', results: 'قطعة',
+      sortBy: 'ترتيب', priceLow: 'السعر: من الأقل', priceHigh: 'السعر: من الأعلى', newest: 'الأحدث', filter: 'تصفية',
+      all: 'الكل', close: 'إغلاق', notFound: 'الصفحة غير موجودة', notFoundSub: 'الصفحة التي تبحث عنها انتقلت أو لم تكن موجودة.',
+    },
+  },
+}
+
+const LanguageContext = createContext(null)
+
+export function LanguageProvider({ children }) {
+  const [lang, setLang] = useState(() => localStorage.getItem('ka-lang') || 'en')
+
+  useEffect(() => {
+    document.documentElement.lang = lang
+    document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr'
+    localStorage.setItem('ka-lang', lang)
+  }, [lang])
+
+  const t = dict[lang]
+  const isRTL = lang === 'ar'
+  const fmtPrice = (n) =>
+    new Intl.NumberFormat(lang === 'ar' ? 'ar-SA' : 'en-US', { maximumFractionDigits: 0 }).format(n) + ' ' + t.common.sar
+
+  return (
+    <LanguageContext.Provider value={{ lang, setLang, t, isRTL, fmtPrice }}>
+      {children}
+    </LanguageContext.Provider>
+  )
+}
+
+export const useLang = () => useContext(LanguageContext)
