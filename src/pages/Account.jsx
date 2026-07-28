@@ -7,7 +7,7 @@ import SEO from '../components/SEO.jsx'
 import { Page, Reveal, Img, Icon } from '../components/ui.jsx'
 
 const DEMO_ORDERS = [
-  { id: 'KA-8H2K4L', date: '2026-06-28', total: 21390, status: 'delivered', items: ['meridian-sofa', 'halo-floor-lamp'] },
+  { id: 'KA-8H2K4L', date: '2026-06-28', total: 21390, status: 'delivered', items: ['meridian-sofa', 'crescent-sideboard'] },
   { id: 'KA-5R9T2M', date: '2026-07-06', total: 16800, status: 'production', items: ['sahara-dining-table'] },
 ]
 

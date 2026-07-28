@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { useLang } from '../i18n.jsx'
 import { useStore, cartCount } from '../store.js'
 import { Icon } from './ui.jsx'
+import Logo from './Logo.jsx'
 
 export default function Navbar({ onCartOpen }) {
   const { t, lang, setLang } = useLang()
@@ -44,11 +45,8 @@ export default function Navbar({ onCartOpen }) {
             </button>
           </div>
 
-          <Link to="/" className={`flex items-baseline gap-2 ${tone}`}>
-            <span className="font-display text-2xl tracking-wide">KA</span>
-            <span className={`hidden sm:block text-[11px] uppercase tracking-[0.3em] ${onDark ? 'text-white/70' : 'text-charcoal/60'}`}>
-              International
-            </span>
+          <Link to="/" aria-label="KA International" className={`flex items-center ${tone}`}>
+            <Logo className="h-11 w-auto" />
           </Link>
 
           <div className="hidden lg:flex items-center gap-9">
@@ -114,7 +112,7 @@ export default function Navbar({ onCartOpen }) {
               className="fixed inset-y-0 start-0 w-[84%] max-w-sm bg-ivory z-[70] p-8 flex flex-col rtl:right-0 rtl:left-auto"
             >
               <div className="flex items-center justify-between mb-10">
-                <span className="font-display text-2xl">KA</span>
+                <Logo className="h-9 w-auto text-charcoal" />
                 <button onClick={() => setOpen(false)} aria-label={t.common.close} className="p-2 cursor-pointer"><Icon.X /></button>
               </div>
               <div className="flex flex-col gap-6">

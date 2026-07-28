@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { useLang } from '../i18n.jsx'
 import { useState } from 'react'
 import { Icon } from './ui.jsx'
+import Logo from './Logo.jsx'
 
 const PAYMENTS = ['mada', 'Visa', 'Mastercard', 'Apple Pay', 'STC Pay', 'Tabby', 'Tamara']
 
@@ -38,9 +39,8 @@ export default function Footer() {
         {/* columns */}
         <div className="grid grid-cols-2 md:grid-cols-5 gap-10 py-14">
           <div className="col-span-2">
-            <div className="flex items-baseline gap-2 mb-5">
-              <span className="font-display text-3xl">KA</span>
-              <span className="text-[11px] uppercase tracking-[0.3em] text-white/60">International</span>
+            <div className="mb-5">
+              <Logo className="h-14 w-auto text-white" />
             </div>
             <p className="text-sm text-white/50 leading-relaxed max-w-xs">{t.footer.about}</p>
             <div className="flex gap-4 mt-6 text-white/50">

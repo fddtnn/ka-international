@@ -4,10 +4,11 @@ import { useLang } from '../i18n.jsx'
 import { PRODUCTS, CATEGORIES, ROOMS } from '../data/products.js'
 import SEO from '../components/SEO.jsx'
 import { Page, Img, Icon } from '../components/ui.jsx'
+import Logo from '../components/Logo.jsx'
 
 const SALES = [42, 55, 48, 61, 58, 72, 66, 80, 74, 89, 84, 96, 90, 104, 98, 112, 106, 121, 116, 128, 122, 134, 130, 142, 138, 150, 146, 158, 152, 164]
 const CAT_REV = [
-  ['living', 46], ['bedroom', 22], ['dining', 14], ['office', 9], ['outdoor', 6], ['accessories', 3],
+  ['living', 52], ['bedroom', 25], ['dining', 15], ['fabrics', 8],
 ]
 const DEMO_ORDERS = [
   { id: 'KA-8H2K4L', customer: 'Noura Alqahtani', total: 21390, status: 'delivered', date: '2026-07-10' },
@@ -79,8 +80,8 @@ export default function Admin() {
       <div className="flex min-h-screen">
         {/* sidebar */}
         <aside className="hidden md:flex flex-col w-64 bg-charcoal-deep text-white p-6 sticky top-0 h-screen overflow-y-auto">
-          <Link to="/" className="flex items-baseline gap-2 mb-10">
-            <span className="font-display text-2xl">KA</span>
+          <Link to="/" className="flex flex-col items-start gap-2 mb-10">
+            <Logo className="h-10 w-auto text-white" />
             <span className="text-[10px] uppercase tracking-[0.28em] text-white/50">{t.admin.title}</span>
           </Link>
           <nav className="flex flex-col gap-1 flex-1">

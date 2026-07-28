@@ -48,6 +48,12 @@ export default function Collections() {
               {category && (<><span className="mx-2">/</span><span className="text-olive-light">{title}</span></>)}
             </nav>
             <h1 className="editorial text-white text-5xl md:text-6xl">{title}</h1>
+            {category === 'fabrics' && (
+              <div className="flex flex-wrap gap-3 mt-6">
+                <Link to="/collections/fabrics/catalog" className="btn-light">{t.fabricFinder.open}</Link>
+                <Link to="/collections/fabrics/studio" className="btn-outline text-white border-white/40 hover:border-white">{t.studio.open}</Link>
+              </div>
+            )}
           </div>
         </div>
       </section>

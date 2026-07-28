@@ -8,6 +8,14 @@ import ProductCard from '../components/ProductCard.jsx'
 import SEO from '../components/SEO.jsx'
 import { Reveal, SectionTitle, Img, Page, Icon } from '../components/ui.jsx'
 
+// Bento spans for the four category cards: one tall hero, one wide, two compact.
+const CATEGORY_SPANS = [
+  'col-span-2 md:col-span-2 md:row-span-2',
+  'col-span-2 md:col-span-2',
+  'md:col-span-1',
+  'md:col-span-1',
+]
+
 export default function Home() {
   const { t, lang } = useLang()
   const hero = getProduct('meridian-sofa')
@@ -90,12 +98,12 @@ export default function Home() {
             <Link to="/collections" className="btn-outline">{t.viewAll}</Link>
           </Reveal>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-4 md:auto-rows-[15.5rem] gap-4 md:gap-6">
           {CATEGORIES.map((c, i) => (
-            <Reveal key={c.id} delay={i * 0.06} className={i === 0 || i === 3 ? 'md:row-span-2' : ''}>
+            <Reveal key={c.id} delay={i * 0.06} className={CATEGORY_SPANS[i] || ''}>
               <Link
                 to={`/collections/${c.id}`}
-                className={`group relative block rounded-luxe overflow-hidden bg-sand ${i === 0 || i === 3 ? 'aspect-[3/4] md:h-full md:aspect-auto' : 'aspect-[4/3]'}`}
+                className="group relative block rounded-luxe overflow-hidden bg-sand aspect-[4/3] md:aspect-auto md:h-full"
               >
                 <Img src={c.image} alt={t.categories[c.id]} className="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.05] transition-transform duration-700 ease-out" />
                 <div className="absolute inset-0 bg-gradient-to-t from-charcoal/70 via-charcoal/10 to-transparent" />
