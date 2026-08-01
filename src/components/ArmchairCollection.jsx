@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { useLang } from '../i18n.jsx'
-import { Reveal, Icon } from './ui.jsx'
+import { Reveal } from './ui.jsx'
 
 // The armchair range cloned from ka-international.com/shop/en/armchairs.
 // Prices are converted from the shop's EUR to SAR at build time; the images are
@@ -13,7 +14,6 @@ export default function ArmchairCollection() {
   const [failed, setFailed] = useState(false)
   const [page, setPage] = useState(0)
   const [sort, setSort] = useState('name')
-  const [open, setOpen] = useState(null) // product shown in the detail overlay
 
   useEffect(() => {
     fetch(`${import.meta.env.BASE_URL}armchairs.json`)
@@ -71,7 +71,7 @@ export default function ArmchairCollection() {
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-5 md:gap-7">
             {items.map((p, i) => (
               <Reveal key={p.id} delay={i * 0.04}>
-                <button onClick={() => setOpen(p)} className="group w-full text-start cursor-pointer">
+                <Link to={`/armchair/${p.slug}`} className="group block w-full text-start">
                   <div className="relative rounded-luxe overflow-hidden bg-sand aspect-square">
                     <img
                       src={imageUrl(p)}
@@ -96,7 +96,7 @@ export default function ArmchairCollection() {
                   </div>
                   <h3 className="mt-3 text-sm leading-snug text-charcoal/85 group-hover:text-olive transition-colors duration-200">{p.name}</h3>
                   <p className="text-sm text-charcoal/60 mt-1">{money(p.price)}</p>
-                </button>
+                </Link>
               </Reveal>
             ))}
           </div>
@@ -113,86 +113,7 @@ export default function ArmchairCollection() {
         </>
       )}
 
-      {open && <Detail product={open} data={data} money={money} onClose={() => setOpen(null)} />}
     </section>
-  )
-}
-
-function Detail({ product, data, money, onClose }) {
-  const { t } = useLang()
-  const [shot, setShot] = useState(0)
-  const [picked, setPicked] = useState({})
-
-  const imageUrl = (i, size = 'large_default') =>
-    `${data.imageBase}${product.images[i]}-${size}/${product.slug}.jpg`
-
-  return (
-    <div onClick={onClose} className="fixed inset-0 z-[80] bg-charcoal/60 flex items-start md:items-center justify-center p-3 md:p-8 overflow-auto">
-      <div onClick={(e) => e.stopPropagation()} className="bg-white rounded-luxe shadow-card w-full max-w-5xl my-auto">
-        <div className="flex items-start justify-between gap-4 p-5 border-b hairline">
-          <div>
-            <h3 className="font-display text-xl">{product.title}</h3>
-            <p className="text-xs uppercase tracking-[0.16em] text-stone mt-1">{product.slug}</p>
-          </div>
-          <button onClick={onClose} aria-label={t.common.close} className="text-stone hover:text-charcoal text-2xl leading-none cursor-pointer">×</button>
-        </div>
-
-        <div className="grid md:grid-cols-2 gap-6 p-5">
-          <div>
-            <div className="rounded-lg overflow-hidden bg-sand">
-              <img src={imageUrl(shot)} alt={product.name} className="w-full aspect-square object-cover" />
-            </div>
-            {product.images.length > 1 && (
-              <div className="flex flex-wrap gap-2 mt-3">
-                {product.images.map((_, i) => (
-                  <button
-                    key={i}
-                    onClick={() => setShot(i)}
-                    className={`w-16 rounded overflow-hidden border-2 transition-colors duration-200 cursor-pointer ${shot === i ? 'border-olive' : 'border-transparent hover:border-charcoal/20'}`}
-                  >
-                    <img src={imageUrl(i, 'home_default')} alt="" loading="lazy" className="w-full aspect-square object-cover bg-sand" />
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-
-          <div>
-            <p className="font-display text-2xl mb-4">{money(product.price)}</p>
-            <p className="text-sm leading-relaxed text-charcoal/75 mb-5">{product.teaser}</p>
-
-            {product.options.map((opt) => (
-              <label key={opt.group} className="block mb-4">
-                <span className="block text-xs uppercase tracking-[0.16em] text-stone mb-2">{opt.label}</span>
-                <select
-                  value={picked[opt.group] ?? opt.values[0]?.id}
-                  onChange={(e) => setPicked({ ...picked, [opt.group]: e.target.value })}
-                  className="w-full border hairline rounded-lg px-3 py-2.5 text-sm bg-white cursor-pointer"
-                >
-                  {opt.values.map((v) => <option key={v.id} value={v.id}>{v.label}</option>)}
-                </select>
-              </label>
-            ))}
-
-            {product.description && (
-              <div className="mt-5 pt-5 border-t hairline">
-                <h4 className="text-xs uppercase tracking-[0.16em] text-stone mb-2">{t.armchairs.details}</h4>
-                <p className="text-[13px] leading-relaxed text-charcoal/70">{product.description}</p>
-              </div>
-            )}
-
-            <a
-              href={product.url}
-              target="_blank"
-              rel="noreferrer"
-              className="btn-outline inline-flex items-center gap-2 mt-6"
-            >
-              {t.armchairs.viewInShop} <Icon.ArrowR size={16} />
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
   )
 }
 

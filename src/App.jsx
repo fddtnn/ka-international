@@ -10,6 +10,7 @@ import Home from './pages/Home.jsx'
 const Collections = lazy(() => import('./pages/Collections.jsx'))
 const FabricCatalog = lazy(() => import('./pages/FabricCatalog.jsx'))
 const Studio = lazy(() => import('./pages/Studio.jsx'))
+const ArmchairPage = lazy(() => import('./pages/ArmchairPage.jsx'))
 const ProductPage = lazy(() => import('./pages/ProductPage.jsx'))
 const Rooms = lazy(() => import('./pages/Rooms.jsx'))
 const RoomDetail = lazy(() => import('./pages/RoomDetail.jsx'))
@@ -55,6 +56,7 @@ export default function App() {
               <Route path="/collections/fabrics/studio" element={<Studio />} />
               <Route path="/collections/:category" element={<Collections />} />
               <Route path="/product/:id" element={<ProductPage onCartOpen={() => setCartOpen(true)} />} />
+              <Route path="/armchair/:slug" element={<ArmchairPage />} />
               <Route path="/rooms" element={<Rooms />} />
               <Route path="/rooms/:id" element={<RoomDetail />} />
               <Route path="/cart" element={<CartPage />} />
