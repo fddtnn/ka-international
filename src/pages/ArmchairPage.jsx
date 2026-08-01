@@ -5,6 +5,7 @@ import { useLang } from '../i18n.jsx'
 import { useStore } from '../store.js'
 import SEO from '../components/SEO.jsx'
 import { Page, Reveal, Icon } from '../components/ui.jsx'
+import ZoomImage from '../components/ZoomImage.jsx'
 
 // Full product page for the armchair range cloned from the KA shop — the same
 // layout the shop uses: gallery, price, variant selects, quantity, add to cart,
@@ -90,9 +91,15 @@ export default function ArmchairPage() {
               initial={{ opacity: 0.4 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.45 }}
-              className="rounded-luxe overflow-hidden bg-sand aspect-square"
             >
-              <img src={img(shot)} alt={product.title} className="w-full h-full object-cover" />
+              {/* product_fich is the shop's largest size — it feeds the magnifier */}
+              <ZoomImage
+                src={img(shot)}
+                zoomSrc={img(shot, 'product_fich')}
+                alt={product.title}
+                className="rounded-luxe bg-sand aspect-square"
+                imgClassName="w-full h-full object-cover"
+              />
             </motion.div>
             {product.images.length > 1 && (
               <div className="flex flex-wrap gap-3 mt-4">

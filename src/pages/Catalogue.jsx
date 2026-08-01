@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { useLang } from '../i18n.jsx'
 import SEO from '../components/SEO.jsx'
 import { Page, Reveal } from '../components/ui.jsx'
+import ZoomImage from '../components/ZoomImage.jsx'
 
 // The 2026 printed catalogue, cut into individual products. Each piece keeps the
 // name, reference and dimensions printed beneath it in the original.
@@ -138,7 +139,13 @@ export default function Catalogue() {
                 </div>
                 <button onClick={() => setZoom(null)} aria-label={t.common.close} className="text-stone hover:text-charcoal text-2xl leading-none cursor-pointer">×</button>
               </div>
-              <img src={src(zoom)} alt={zoom.name} className="w-full object-contain p-6" />
+              <ZoomImage
+                src={src(zoom)}
+                alt={zoom.name}
+                scale={2}
+                className="m-6 bg-white"
+                imgClassName="w-full object-contain"
+              />
             </div>
           </div>
         )}

@@ -81,10 +81,20 @@ for (const cfg of PAGES) {
     if (seen.has(slug)) continue
     seen.add(slug)
     const file = `${slug}.jpg`
+    // Keep the catalogue's own pixels. Squaring by padding rather than resizing
+    // avoids upscaling a ~580px cell to 760px, which only adds blur.
+    const side = Math.max(cell.width, cell.height)
     await sharp(work)
       .extract(cell)
-      .resize(760, 760, { fit: 'contain', background: '#ffffff' })
-      .jpeg({ quality: 78, mozjpeg: true })
+      .extend({
+        top: Math.floor((side - cell.height) / 2),
+        bottom: Math.ceil((side - cell.height) / 2),
+        left: Math.floor((side - cell.width) / 2),
+        right: Math.ceil((side - cell.width) / 2),
+        background: '#ffffff',
+      })
+      .sharpen({ sigma: 0.6 }) // counters the softness of the page JPEG
+      .jpeg({ quality: 92, mozjpeg: true, chromaSubsampling: '4:4:4' })
       .toFile(`${OUT}/${file}`)
     products.push({
       slug, name: best.name || label, ref: best.ref || null, dim: best.dim || null,
