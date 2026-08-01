@@ -338,15 +338,17 @@ export function Desk({ m }) {
 }
 
 /* ---------- OUTDOOR LOUNGE CHAIR ---------- */
-/* Flat tapered board leg, splayed out on both axes — the compass stance the
-   Brasilia stands on. A four-sided cylinder gives the taper; flattening it on
-   one axis turns the cone into a board. */
+/* Tapered board leg in the compass stance. Seen from the side it reads as a
+   broad blade raking front-to-back; from the front it is thin. A four-sided
+   cylinder gives the taper, and squashing it on X — not Z — keeps the blade
+   facing the way the reference does. */
 function CompassLeg({ x, z, height, wood }) {
-  const tilt = 0.24
+  const rake = 0.34 // strong front-to-back splay
+  const flare = 0.1 // slight outward lean
   return (
-    <group position={[x, height / 2, z]} rotation={[z > 0 ? tilt : -tilt, 0, x > 0 ? -tilt : tilt]}>
-      <mesh rotation={[0, Math.PI / 4, 0]} scale={[1, 1, 0.55]} castShadow>
-        <cylinderGeometry args={[0.082, 0.042, height, 4]} />
+    <group position={[x, height / 2, z]} rotation={[z > 0 ? rake : -rake, 0, x > 0 ? -flare : flare]}>
+      <mesh rotation={[0, Math.PI / 4, 0]} scale={[0.46, 1, 1]} castShadow>
+        <cylinderGeometry args={[0.088, 0.05, height, 4]} />
         <WoodMat color={wood} />
       </mesh>
     </group>
@@ -355,10 +357,12 @@ function CompassLeg({ x, z, height, wood }) {
 
 /* ---------- BRASILIA LOUNGE CHAIR ---------- */
 export function LoungeChair({ m }) {
-  const legH = 0.4
+  // Roughly the real piece: seat top at 44 cm, back top at 74 cm, so the legs
+  // take only the bottom third of the height.
+  const legH = 0.26
   const W = 0.68
-  const D = 0.64
-  const seatH = 0.17
+  const D = 0.68
+  const seatH = 0.19
   const seatY = legH + seatH / 2
   const fab = { color: m.upholstery, rough: m.upholsteryRough }
 
@@ -380,10 +384,10 @@ export function LoungeChair({ m }) {
 
       {/* single reclined back panel rising off the seat's rear edge */}
       <RoundedBox
-        args={[W - 0.04, 0.5, 0.12]}
+        args={[W - 0.04, 0.44, 0.12]}
         radius={0.05}
-        position={[0, seatY + 0.29, -D / 2 + 0.03]}
-        rotation={[-0.15, 0, 0]}
+        position={[0, seatY + 0.2, -D / 2 + 0.02]}
+        rotation={[-0.13, 0, 0]}
         castShadow
       >
         <Fab {...fab} />
