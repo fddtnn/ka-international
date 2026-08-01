@@ -352,7 +352,7 @@ export default function ProductPage({ onCartOpen }) {
         </section>
 
         {/* ============ the real KA armchair range, cloned from the shop ============ */}
-        {product.id === 'atlas-armchair' && <ArmchairCollection />}
+        {product.id === 'brasilia-armchair' && <ArmchairCollection />}
 
         {/* ============ related ============ */}
         {related.length > 0 && (

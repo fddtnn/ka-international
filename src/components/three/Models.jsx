@@ -338,38 +338,55 @@ export function Desk({ m }) {
 }
 
 /* ---------- OUTDOOR LOUNGE CHAIR ---------- */
+/* Flat tapered board leg, splayed out on both axes — the compass stance the
+   Brasilia stands on. A four-sided cylinder gives the taper; flattening it on
+   one axis turns the cone into a board. */
+function CompassLeg({ x, z, height, wood }) {
+  const tilt = 0.24
+  return (
+    <group position={[x, height / 2, z]} rotation={[z > 0 ? tilt : -tilt, 0, x > 0 ? -tilt : tilt]}>
+      <mesh rotation={[0, Math.PI / 4, 0]} scale={[1, 1, 0.55]} castShadow>
+        <cylinderGeometry args={[0.082, 0.042, height, 4]} />
+        <WoodMat color={wood} />
+      </mesh>
+    </group>
+  )
+}
+
+/* ---------- BRASILIA LOUNGE CHAIR ---------- */
 export function LoungeChair({ m }) {
+  const legH = 0.4
+  const W = 0.68
+  const D = 0.64
+  const seatH = 0.17
+  const seatY = legH + seatH / 2
+  const fab = { color: m.upholstery, rough: m.upholsteryRough }
+
   return (
     <group>
-      {/* teak frame */}
-      {[-1, 1].map((s) => (
-        <group key={s}>
-          <mesh position={[s * 0.36, 0.3, 0.3]} castShadow>
-            <cylinderGeometry args={[0.025, 0.025, 0.6, 12]} />
-            <WoodMat color={m.wood} />
-          </mesh>
-          <mesh position={[s * 0.36, 0.35, -0.3]} castShadow>
-            <cylinderGeometry args={[0.025, 0.025, 0.7, 12]} />
-            <WoodMat color={m.wood} />
-          </mesh>
-          <mesh position={[s * 0.36, 0.45, 0]} rotation={[Math.PI / 2.2, 0, 0]} castShadow>
-            <cylinderGeometry args={[0.022, 0.022, 0.68, 12]} />
-            <WoodMat color={m.wood} />
-          </mesh>
-        </group>
+      {[[-1, -1], [1, -1], [-1, 1], [1, 1]].map(([sx, sz], i) => (
+        <CompassLeg key={i} x={sx * (W / 2 - 0.07)} z={sz * (D / 2 - 0.08)} height={legH} wood={m.wood} />
       ))}
-      {/* rope back: horizontal strands */}
-      {Array.from({ length: 6 }).map((_, i) => (
-        <mesh key={i} position={[0, 0.42 + i * 0.055, -0.3 + i * 0.012]} rotation={[0, 0, Math.PI / 2]} castShadow>
-          <cylinderGeometry args={[0.012, 0.012, 0.72, 10]} />
-          <Fab color="#D8D2C4" rough={1} />
-        </mesh>
-      ))}
-      <RoundedBox args={[0.72, 0.12, 0.62]} radius={0.05} position={[0, 0.36, 0.06]} castShadow>
-        <Fab color={m.upholstery} rough={m.upholsteryRough} />
+
+      {/* the wooden apron the legs meet, visible as a band under the seat */}
+      <RoundedBox args={[W - 0.06, 0.075, D - 0.06]} radius={0.012} position={[0, legH - 0.035, 0]} castShadow>
+        <WoodMat color={m.wood} />
       </RoundedBox>
-      <RoundedBox args={[0.72, 0.3, 0.1]} radius={0.05} position={[0, 0.56, -0.24]} rotation={[-0.22, 0, 0]} castShadow>
-        <Fab color={m.upholstery} rough={m.upholsteryRough} />
+
+      {/* one deep seat cushion, no arms */}
+      <RoundedBox args={[W, seatH, D]} radius={0.05} position={[0, seatY, 0]} castShadow receiveShadow>
+        <Fab {...fab} />
+      </RoundedBox>
+
+      {/* single reclined back panel rising off the seat's rear edge */}
+      <RoundedBox
+        args={[W - 0.04, 0.5, 0.12]}
+        radius={0.05}
+        position={[0, seatY + 0.29, -D / 2 + 0.03]}
+        rotation={[-0.15, 0, 0]}
+        castShadow
+      >
+        <Fab {...fab} />
       </RoundedBox>
     </group>
   )
