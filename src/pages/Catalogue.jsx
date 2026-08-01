@@ -109,6 +109,9 @@ export default function Catalogue() {
                       {p.ref && <span>REF. {p.ref}</span>}
                       {p.ref && p.dim && <span className="mx-2">·</span>}
                       {p.dim && <span>{p.dim} cm</span>}
+                      {p.variants?.length > 1 && (
+                        <span className="ms-2 text-olive">+{p.variants.length - 1}</span>
+                      )}
                     </p>
                   </button>
                 </Reveal>
@@ -133,9 +136,24 @@ export default function Catalogue() {
               <div className="flex items-start justify-between gap-4 p-5 border-b hairline">
                 <div>
                   <h2 className="font-display text-xl">{zoom.name}</h2>
-                  <p className="text-xs uppercase tracking-[0.16em] text-stone mt-1">
-                    {zoom.ref && `REF. ${zoom.ref}`}{zoom.ref && zoom.dim && ' · '}{zoom.dim && `${zoom.dim} cm`}
-                  </p>
+                  {/* Sofas are sold in three lengths, each with its own reference */}
+                  {zoom.variants?.length ? (
+                    <table className="mt-3 text-[13px]">
+                      <tbody>
+                        {zoom.variants.map((v) => (
+                          <tr key={v.ref}>
+                            <td className="pe-4 py-0.5 text-charcoal/80">{v.size}</td>
+                            <td className="pe-4 py-0.5 text-stone">REF. {v.ref}</td>
+                            <td className="py-0.5 text-stone">{v.dim} cm</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  ) : (
+                    <p className="text-xs uppercase tracking-[0.16em] text-stone mt-1">
+                      {zoom.ref && `REF. ${zoom.ref}`}{zoom.ref && zoom.dim && ' · '}{zoom.dim && `${zoom.dim} cm`}
+                    </p>
+                  )}
                 </div>
                 <button onClick={() => setZoom(null)} aria-label={t.common.close} className="text-stone hover:text-charcoal text-2xl leading-none cursor-pointer">×</button>
               </div>

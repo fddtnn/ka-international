@@ -7,6 +7,7 @@
 import { mkdirSync, readFileSync, writeFileSync, rmSync } from 'node:fs'
 import sharp from 'sharp'
 import { segment } from './segment.mjs'
+import { cutStacked } from './stacked.mjs'
 
 const items = JSON.parse(readFileSync('cat-items.json', 'utf8'))
 
@@ -14,11 +15,10 @@ const PAGES = [
   { page: 6, img: 'img007', section: 'armchairs' },
   { page: 7, img: 'img008', section: 'armchairs' },
   { page: 8, img: 'img009', section: 'armchairs' },
-  { page: 10, img: 'img011', section: 'sofas', leftOnly: 0.46 },
-  { page: 11, img: 'img012', section: 'sofas', leftOnly: 0.46 },
-  { page: 12, img: 'img014', section: 'sofas', leftOnly: 0.46 },
-  { page: 14, img: 'img018', section: 'modular', leftOnly: 0.45 },
-  { page: 15, img: 'img019', section: 'modular', leftOnly: 0.45 },
+  // Sofas are stacked with no gutter, so they are cut from the captions.
+  { page: 10, img: 'img011', section: 'sofas', stacked: 2 },
+  { page: 11, img: 'img012', section: 'sofas', stacked: 2 },
+  { page: 12, img: 'img014', section: 'sofas', stacked: 2 },
   { page: 16, img: 'img020', section: 'poufs' },
   { page: 17, img: 'img021', section: 'benches' },
   { page: 18, img: 'img022', section: 'chairs' },
@@ -60,6 +60,39 @@ for (const cfg of PAGES) {
     work = `cat-img/_${cfg.img}-left.jpg`
     await sharp(src).extract({ left: 0, top: 0, width: Math.round(meta.width * cfg.leftOnly), height: meta.height }).toFile(work)
   }
+  if (cfg.stacked) {
+    const cuts = await cutStacked(src, cfg.page, { cols: cfg.stacked })
+    let n = 0
+    for (const c of cuts) {
+      if (!c.variants.length && !c.name) continue
+      const slug = c.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+      if (seen.has(slug)) continue
+      seen.add(slug)
+      const file = `${slug}.jpg`
+      const side = Math.max(c.crop.width, c.crop.height)
+      await sharp(src)
+        .extract(c.crop)
+        .extend({
+          top: Math.floor((side - c.crop.height) / 2),
+          bottom: Math.ceil((side - c.crop.height) / 2),
+          left: Math.floor((side - c.crop.width) / 2),
+          right: Math.ceil((side - c.crop.width) / 2),
+          background: '#ffffff',
+        })
+        .sharpen({ sigma: 0.6 })
+        .jpeg({ quality: 92, mozjpeg: true, chromaSubsampling: '4:4:4' })
+        .toFile(`${OUT}/${file}`)
+      products.push({
+        slug, name: c.name, ref: c.variants[0]?.ref || null,
+        dim: c.variants[0]?.dim || null, variants: c.variants,
+        section: cfg.section, page: cfg.page, image: file,
+      })
+      n++
+    }
+    console.log(`p${String(cfg.page).padStart(2)} ${cfg.section.padEnd(9)} stacked · products ${n}`)
+    continue
+  }
+
   const { W, H, cells } = await segment(work)
   // The crop is in image pixels; the text is in page points.
   const [pw, ph] = items[cfg.page].size
