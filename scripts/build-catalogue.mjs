@@ -11,6 +11,7 @@ import { mkdirSync, readFileSync, writeFileSync, rmSync } from 'node:fs'
 import sharp from 'sharp'
 import { cutPage } from './captioncut.mjs'
 import { cutStacked } from './stacked.mjs'
+import { tidy } from './tidy.mjs'
 
 const items = JSON.parse(readFileSync('cat-items.json', 'utf8'))
 
@@ -34,16 +35,19 @@ const seen = new Set()
 const products = []
 
 async function save(src, crop, file) {
-  const side = Math.max(crop.width, crop.height)
-  await sharp(src)
-    .extract(crop)
+  const raw = await sharp(src).extract(crop).png().toBuffer()
+  // Whiten the page background, drop the hairline dividers, trim to the piece.
+  const { buffer, width, height } = await tidy(raw)
+  const side = Math.max(width, height)
+  await sharp(buffer)
     .extend({
-      top: Math.floor((side - crop.height) / 2),
-      bottom: Math.ceil((side - crop.height) / 2),
-      left: Math.floor((side - crop.width) / 2),
-      right: Math.ceil((side - crop.width) / 2),
+      top: Math.floor((side - height) / 2),
+      bottom: Math.ceil((side - height) / 2),
+      left: Math.floor((side - width) / 2),
+      right: Math.ceil((side - width) / 2),
       background: '#ffffff',
     })
+    .flatten({ background: '#ffffff' })
     .sharpen({ sigma: 0.6 }) // counters the softness of the page JPEG
     .jpeg({ quality: 92, mozjpeg: true, chromaSubsampling: '4:4:4' })
     .toFile(`${OUT}/${file}`)
