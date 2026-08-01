@@ -27,6 +27,7 @@ export default function Navbar({ onCartOpen }) {
   const links = [
     { to: '/collections', label: t.nav.collections },
     { to: '/rooms', label: t.nav.rooms },
+    { to: '/catalogue', label: t.catalogue.title },
   ]
 
   const tone = onDark ? 'text-white' : 'text-charcoal'
