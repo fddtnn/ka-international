@@ -18,6 +18,7 @@ for (const p of PAGES) {
     .map((i) => ({
       s: i.str.trim(),
       x: Math.round(i.transform[4]),
+      w: Math.round(i.width || 0), // needed to find a centred caption's middle
       y: Math.round(vp.height - i.transform[5]), // top-down, like the image
     }))
     .sort((a, b) => a.y - b.y || a.x - b.x)
