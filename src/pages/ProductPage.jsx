@@ -6,6 +6,7 @@ import { useStore } from '../store.js'
 import { getProduct, PRODUCTS, defaultConfig, priceOf, configSummary } from '../data/products.js'
 import ProductViewer from '../components/three/ProductViewer.jsx'
 import ProductCard from '../components/ProductCard.jsx'
+import ArmchairCollection from '../components/ArmchairCollection.jsx'
 import SEO, { productSchema, breadcrumbSchema } from '../components/SEO.jsx'
 import { Page, Reveal, Img, Icon, Stars } from '../components/ui.jsx'
 
@@ -349,6 +350,9 @@ export default function ProductPage({ onCartOpen }) {
             ))}
           </div>
         </section>
+
+        {/* ============ the real KA armchair range, cloned from the shop ============ */}
+        {product.id === 'atlas-armchair' && <ArmchairCollection />}
 
         {/* ============ related ============ */}
         {related.length > 0 && (
