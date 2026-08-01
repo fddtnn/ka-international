@@ -59,76 +59,130 @@ function Legs({ style, positions, height = 0.18, wood, metal }) {
   )
 }
 
+/* Slim splayed cone leg — the sharply tapered dark foot the Meridian stands on. */
+function ConeLeg({ x, z, height, wood }) {
+  const splay = 0.07
+  return (
+    <mesh
+      position={[x, height / 2, z]}
+      rotation={[z > 0 ? -splay : splay, 0, x > 0 ? -splay : splay]}
+      castShadow
+    >
+      <cylinderGeometry args={[0.032, 0.007, height, 20]} />
+      <WoodMat color={wood} />
+    </mesh>
+  )
+}
+
 /* ---------- SOFA ---------- */
 export function Sofa({ m, sizeScale = 1, layout = 'standard' }) {
-  const W = 2.2 * sizeScale
-  const legH = 0.16
+  const W = 2.0 * sizeScale
+  const D = 0.9
+  const legH = 0.26 // tall and thin, so the frame reads as if it floats
+  const armW = 0.12 // slim track arm
+  const frameY = legH + 0.1
+  const seatY = legH + 0.28
   const seats = sizeScale > 1.2 ? 4 : sizeScale > 1.05 ? 3 : 2
-  const seatW = (W - 0.5) / seats
+  const inner = W - armW * 2 - 0.03
+  const seatW = inner / seats
   const chaise = layout === 'chaise' || layout === 'corner'
+  const legX = W / 2 - 0.1
+  const legZ = D / 2 - 0.12
+  const fab = { color: m.upholstery, rough: m.upholsteryRough }
+
   return (
     <group>
-      <Legs
-        style={m.legs}
-        positions={[[-W / 2 + 0.15, 0, -0.38], [W / 2 - 0.15, 0, -0.38], [-W / 2 + 0.15, 0, 0.38], [W / 2 - 0.15, 0, 0.38]]}
-        height={legH} wood={m.wood} metal={m.metal}
-      />
-      {/* base */}
-      <RoundedBox args={[W, 0.22, 0.95]} radius={0.05} position={[0, legH + 0.11, 0]} castShadow receiveShadow>
-        <Fab color={m.upholstery} rough={m.upholsteryRough} />
+      {m.legs === 'tapered' ? (
+        [[-legX, -legZ], [legX, -legZ], [-legX, legZ], [legX, legZ]].map(([x, z], i) => (
+          <ConeLeg key={i} x={x} z={z} height={legH} wood={m.wood} />
+        ))
+      ) : (
+        <Legs
+          style={m.legs}
+          positions={[[-legX, 0, -legZ], [legX, 0, -legZ], [-legX, 0, legZ], [legX, 0, legZ]]}
+          height={legH} wood={m.wood} metal={m.metal}
+        />
+      )}
+
+      {/* frame — a shallow apron, the seat cushions sit proud of it */}
+      <RoundedBox args={[W, 0.16, D]} radius={0.03} position={[0, frameY, 0]} castShadow receiveShadow>
+        <Fab {...fab} />
       </RoundedBox>
+
       {/* seat cushions */}
       {Array.from({ length: seats }).map((_, i) => (
         <RoundedBox
           key={i}
-          args={[seatW - 0.04, 0.16, 0.8]}
+          args={[seatW - 0.025, 0.19, D - 0.14]}
           radius={0.06}
-          position={[-W / 2 + 0.25 + seatW / 2 + i * seatW, legH + 0.32, 0.03]}
+          position={[-inner / 2 + seatW / 2 + i * seatW, seatY, 0.04]}
           castShadow
         >
-          <Fab color={m.upholstery} rough={m.upholsteryRough} />
+          <Fab {...fab} />
         </RoundedBox>
       ))}
-      {/* back */}
-      <RoundedBox args={[W, 0.52, 0.18]} radius={0.06} position={[0, legH + 0.48, -0.4]} rotation={[-0.08, 0, 0]} castShadow>
-        <Fab color={m.upholstery} rough={m.upholsteryRough} />
+
+      {/* low back panel */}
+      <RoundedBox args={[W, 0.44, 0.13]} radius={0.045} position={[0, legH + 0.42, -D / 2 + 0.065]} rotation={[-0.05, 0, 0]} castShadow>
+        <Fab {...fab} />
       </RoundedBox>
-      {/* back cushions */}
+
+      {/* loose back cushions, plump and slightly proud of the frame */}
       {Array.from({ length: seats }).map((_, i) => (
         <RoundedBox
           key={i}
-          args={[seatW - 0.06, 0.34, 0.14]}
-          radius={0.06}
-          position={[-W / 2 + 0.25 + seatW / 2 + i * seatW, legH + 0.52, -0.28]}
-          rotation={[-0.14, 0, 0]}
+          args={[seatW - 0.045, 0.38, 0.2]}
+          radius={0.08}
+          position={[-inner / 2 + seatW / 2 + i * seatW, seatY + 0.28, -D / 2 + 0.21]}
+          rotation={[-0.1, 0, 0]}
           castShadow
         >
-          <Fab color={m.accent === m.upholstery ? m.upholstery : m.upholstery} rough={m.upholsteryRough} />
+          <Fab {...fab} />
         </RoundedBox>
       ))}
-      {/* arms */}
+
+      {/* slim arms, sitting just below the loose back cushions */}
       {[-1, 1].map((s) => (
-        <RoundedBox key={s} args={[0.22, 0.42, 0.95]} radius={0.09} position={[s * (W / 2 + 0.11 - 0.11), legH + 0.4, 0]} castShadow>
-          <Fab color={m.upholstery} rough={m.upholsteryRough} />
+        <RoundedBox
+          key={s}
+          args={[armW, 0.37, D]}
+          radius={0.04}
+          position={[s * (W / 2 - armW / 2), legH + 0.36, 0]}
+          castShadow
+        >
+          <Fab {...fab} />
         </RoundedBox>
       ))}
-      {/* bolster pillows (accent = leather tone) */}
-      <RoundedBox args={[0.34, 0.3, 0.12]} radius={0.06} position={[-W / 2 + 0.42, legH + 0.5, -0.2]} rotation={[-0.18, 0.25, 0.06]} castShadow>
-        <Fab color={m.accent} rough={0.6} />
-      </RoundedBox>
-      <RoundedBox args={[0.34, 0.3, 0.12]} radius={0.06} position={[W / 2 - 0.42, legH + 0.5, -0.2]} rotation={[-0.18, -0.25, -0.06]} castShadow>
-        <Fab color={m.accent} rough={0.6} />
-      </RoundedBox>
+
+      {/* bolster cushions lying on the seat against each arm */}
+      {[-1, 1].map((s) => (
+        <mesh
+          key={s}
+          position={[s * (W / 2 - armW - 0.085), seatY + 0.16, 0.06]}
+          rotation={[Math.PI / 2, 0, 0]}
+          castShadow
+        >
+          <capsuleGeometry args={[0.076, 0.28, 6, 18]} />
+          <Fab {...fab} />
+        </mesh>
+      ))}
+
       {/* chaise extension */}
       {chaise && (
         <group position={[W / 2 - 0.45, 0, layout === 'corner' ? 0.95 : 0.85]}>
-          <RoundedBox args={[0.86, 0.22, 0.8]} radius={0.05} position={[0, legH + 0.11, 0]} castShadow>
-            <Fab color={m.upholstery} rough={m.upholsteryRough} />
+          <RoundedBox args={[0.86, 0.2, 0.8]} radius={0.035} position={[0, frameY, 0]} castShadow>
+            <Fab {...fab} />
           </RoundedBox>
-          <RoundedBox args={[0.8, 0.15, 0.72]} radius={0.06} position={[0, legH + 0.3, 0]} castShadow>
-            <Fab color={m.upholstery} rough={m.upholsteryRough} />
+          <RoundedBox args={[0.8, 0.16, 0.72]} radius={0.055} position={[0, seatY, 0]} castShadow>
+            <Fab {...fab} />
           </RoundedBox>
-          <Legs style={m.legs} positions={[[-0.32, 0, -0.28], [0.32, 0, -0.28], [-0.32, 0, 0.28], [0.32, 0, 0.28]]} height={legH} wood={m.wood} metal={m.metal} />
+          {m.legs === 'tapered' ? (
+            [[-0.32, -0.28], [0.32, -0.28], [-0.32, 0.28], [0.32, 0.28]].map(([x, z], i) => (
+              <ConeLeg key={i} x={x} z={z} height={legH} wood={m.wood} />
+            ))
+          ) : (
+            <Legs style={m.legs} positions={[[-0.32, 0, -0.28], [0.32, 0, -0.28], [-0.32, 0, 0.28], [0.32, 0, 0.28]]} height={legH} wood={m.wood} metal={m.metal} />
+          )}
         </group>
       )}
     </group>
